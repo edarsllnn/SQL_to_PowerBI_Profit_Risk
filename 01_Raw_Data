@@ -1,0 +1,47 @@
+-- TABLO 1: ISLEMLER_RAW
+CREATE TABLE ISLEMLER_RAW (
+    islem_id INT PRIMARY KEY,
+    urun_id VARCHAR(10),
+    satis_fiyati DECIMAL(10, 2),
+    maliyet DECIMAL(10, 2),
+    hata_durumu INT -- 0 = Hata Yok, 1 = Hata Var
+);
+
+-- TABLO 2: URUN_TANIMLARI
+CREATE TABLE URUN_TANIMLARI (
+    urun_id VARCHAR(10) PRIMARY KEY,
+    kategori_adi VARCHAR(50)
+);
+INSERT INTO ISLEMLER_RAW (islem_id, urun_id, satis_fiyati, maliyet, hata_durumu) VALUES
+(1001, 'A10', 150.00, 100.00, 0),
+(1002, 'B25', 30.00, 25.00, 1),
+(1003, 'A10', 160.00, 105.00, 0),
+(1004, 'C40', 800.00, 600.00, 0),
+(1005, 'B25', 35.00, 20.00, 0),
+(1006, 'C40', 850.00, 700.00, 1),
+(1007, 'A10', 145.00, 110.00, 1),
+(1008, 'D05', 50.00, 45.00, 0),
+(1009, 'B25', 30.00, 15.00, 0),
+(1010, 'A10', 155.00, 120.00, 0),
+(1011, 'D05', 55.00, 30.00, 0),
+(1012, 'C40', 750.00, 650.00, 0);
+
+INSERT INTO URUN_TANIMLARI (urun_id, kategori_adi) VALUES
+('A10', 'Elektronik Aksesuar'),
+('B25', 'Sarf Malzemesi'),
+('C40', 'Yüksek Maliyetli Ürün'),
+('D05', 'Servis/Hizmet');
+
+SELECT
+    U.kategori_adi,
+    SUM(I.hata_durumu) AS toplam_hata_sayisi,
+    AVG(I.satis_fiyati - I.maliyet) AS Ortalama_Kar_Marji
+FROM
+    ISLEMLER_RAW I
+INNER JOIN
+    URUN_TANIMLARI U ON I.urun_id = U.urun_id
+GROUP BY
+    U.kategori_adi
+ORDER BY
+    Ortalama_Kar_Marji ASC,
+    toplam_hata_sayisi DESC;
