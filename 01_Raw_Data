@@ -31,17 +31,3 @@ INSERT INTO URUN_TANIMLARI (urun_id, kategori_adi) VALUES
 ('B25', 'Sarf Malzemesi'),
 ('C40', 'Yüksek Maliyetli Ürün'),
 ('D05', 'Servis/Hizmet');
-
-SELECT
-    U.kategori_adi,
-    SUM(I.hata_durumu) AS toplam_hata_sayisi,
-    AVG(I.satis_fiyati - I.maliyet) AS Ortalama_Kar_Marji
-FROM
-    ISLEMLER_RAW I
-INNER JOIN
-    URUN_TANIMLARI U ON I.urun_id = U.urun_id
-GROUP BY
-    U.kategori_adi
-ORDER BY
-    Ortalama_Kar_Marji ASC,
-    toplam_hata_sayisi DESC;
